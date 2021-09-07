@@ -79,6 +79,7 @@ def shift_coords(pos, rangle, rpos, c, d):
 #    pos2 = apply_scaling(pos1, c)
 #    pos3 = apply_translation(pos2, rangle, rpos)
 
+#    pos3 = apply_zeropoint(pos, d)
 
     return pos3
 
@@ -114,13 +115,10 @@ def solve_offsets(pos1, pos2):
             sqdist.append(dist)
         return np.array(sqdist).sum()
 
-    theta0 = [0.]*7
+    theta0 = [0., 0., 0., 1., 1., 0., 0.]
     result = minimize(get_sum_sq_dist, theta0, args=([pos1, pos2]))
-    if result.success:
-        x=result.x
-        solution = {'rangle':x[0], 'rpos':x[1:3], 'c':x[3:5], 'd':x[5:]}
-        print(solution)
-        return solution
-    else:
-        raise ValueError(result.message)
+    x=result.x
+    solution = {'rangle':x[0], 'rpos':x[1:3], 'c':x[3:5], 'd':x[5:]}
+    print(solution)
+    return solution
 
